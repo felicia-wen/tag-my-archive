@@ -36,7 +36,10 @@ for root,dirs,files in os.walk(dlfolder):
         if (extname.group()=="zip"): os.system('unzip "$fullpath" -d "$ext/$n1/$n2"')
         elif (extname.group()=="rar"): os.system('unrar x "$fullpath" "$ext/$n1/$n2"')
         elif (extname.group()=="7z"): os.system('7z x "$fullpath" -o"$ext/$n1/$n2"')
-        else: print("unsupported archive format.")
+        else: 
+            print("unsupported archive format.")
+            os.system('rm -rf $ext/$n1/$n2"')
+os.system('unset $ext && unset $n1 && unset $n2')
 
 
 
