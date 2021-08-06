@@ -11,16 +11,16 @@ for root,dirs,files in os.walk(dlfolder):
         if extname: print("extname.group() Found",extname.group())
         else: print("No ext found")
         fullpath=os.path.join(root,name)
-        n=re.split(r" +",frontname.group(),1)
-        np=re.split(r" - +",frontname.group(),1)
-        if np!="[\'frontname.group()\']":
-            n=re.split(r" +",frontname.group(),1)
+        n=re.split(" +",frontname.group(),1)
+        np=re.split(" - ?",frontname.group(),1)
+        if len(np)!=1:n=np
         n1=n[0]
         n2=n[1]
-        n0=re.search(r"\[\w+\]",frontname.group())
+        n0=re.search("(?<=\[)[^PMGB]*?(?=\])",frontname.group())
         if n0: 
             print("n0.group() Found",n0.group(0))
             n1=n0.group(0)
+            n2=(frontname.group()).replace('['+n1+']',"")
         print("Author:",n1)
         print("Name:",n2)
         if n1=="" or n1==" " or n2=="" or n2==" ":
