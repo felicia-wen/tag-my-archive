@@ -1,4 +1,4 @@
 extract and sort your archives simply.
-![before](/before.png)
->>>
-![after](after.png)
+before | after
+-------|------
+![before](/before.png) | ![after](after.png)
