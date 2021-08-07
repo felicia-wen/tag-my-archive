@@ -1,4 +1,4 @@
-extract and sort your archives simply.
+extract and sort your archives simply.  
 Depends:
 * Unix-like shell environment
 * Packages
