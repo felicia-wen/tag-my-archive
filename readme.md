@@ -7,10 +7,14 @@
         * unzip 
         * unrar 
 ``` Shell
-Type 'python tagmyarchive.py -h' for usages.
-python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>
+Usages:
+-h|help Display this message.
+-x      Specify your Resource Dir.
+-o      Specify the Output Dir.
+-s      Use Pre-Defined Dir.
+--noask Dont Ask [y/n].
+Sample: python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>
 ```
-### OR 
 #### run with `-s`, set them in .py
 ``` Python
 dlfolder=""  # archives directory

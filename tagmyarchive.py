@@ -20,8 +20,9 @@ def start():
         with open("available_ext",'r') as avl:
             avlstr=avl.read()
             print("available_ext:",avlstr, "Current dir:",os.getcwd())
-            y=input("Continue?\n[y/n]\n:")
-            if y!="y":sys.exit()
+            if noask!="y":
+                y=input("Continue?\n[y/n]\n:")
+                if y!="y":sys.exit()
             if '7z' in avlstr:
                 p7zip='7z'
                 print("Shell: 7z detected.")
@@ -97,22 +98,32 @@ def start():
             if _un=='rar': os.system('unrar x "$fullpath" "$ext/$n1/$n2"')
     os.remove('available_ext')
     os.chmod(ext,stat.S_IRWXO)
+help="""
+Usages:
+\t-h|help\tDisplay this message.
+\t-x\tSpecify your Resource Dir.
+\t-o\tSpecify the Output Dir.
+\t-s\tUse Pre-Defined Dir.
+\t--noask\tDont Ask [y/n].
+\tSample:\tpython tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>
+"""
 if sys.argv[1:]:
     print(datetime.datetime.now(),"Start.")
 else:
     print("Type 'python tagmyarchive.py -h' for usages.")
 try:
-    options,otheropts=getopt.getopt(sys.argv[1:],"sx:o:h")
+    options,otheropts=getopt.getopt(sys.argv[1:],"sx:o:h",['noask'])
 except getopt.GetoptError:
     print("Type 'python tagmyarchive.py -h' for usages.")
     sys.exit(2)
 for option,argument in options:
-    if option=='-h':print("python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>"),sys.exit()
+    if option=='-h':print(help),sys.exit()
     if option=='-x':dlfolder,xg=argument,"passed"
     if option=='-o':ext,og=argument,"passed"
     if option=='-s':print("no args given,using defaults in script."),start()
+    if option=='--noask':noask="y"
 for otheropt in otheropts:
-    if otheropt=='help':print("python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>"),sys.exit()
+    if otheropt=='help':print(help),sys.exit()
     else:print("Type 'python tagmyarchive.py -h' for usages.")
 if os.name=='nt':
     print('unsupported system.')
