@@ -17,24 +17,24 @@ def start():
             zipper=input("input your 7z.exe path again:")
     else:
         os.system('echo $(which 7z unzip unrar | grep -E -o "7z|unzip|unrar") > $ext/available_ext')
-        avl=open("available_ext",'r')
-        avlstr=avl.read()
-        print("available_ext:",avlstr, "Current dir:",os.getcwd())
-        y=input("y/n?")
-        if y!="y":sys.exit()
-        if '7z' in avlstr:
-            p7zip='7z'
-            print("Shell: 7z detected.")
-        elif 'unzip' in avlstr: 
-            zip_only='zip'
-            print("Shell:unzip detected.")
-            if 'unrar' in avlstr: 
-                rar_only='rar'
-                print("Shell:unrar detected.")
-        else: 
-            shellNone=1
-            print("None of shell way extract method available.")
-            sys.exit()
+        with open("available_ext",'r') as avl:
+            avlstr=avl.read()
+            print("available_ext:",avlstr, "Current dir:",os.getcwd())
+            y=input("Continue?\n[y/n]\n:")
+            if y!="y":sys.exit()
+            if '7z' in avlstr:
+                p7zip='7z'
+                print("Shell: 7z detected.")
+            elif 'unzip' in avlstr: 
+                zip_only='zip'
+                print("Shell:unzip detected.")
+                if 'unrar' in avlstr: 
+                    rar_only='rar'
+                    print("Shell:unrar detected.")
+            else: 
+                shellNone=1
+                print("None of shell way extract method available.")
+                sys.exit()
     for root,dirs,files in os.walk(dlfolder):
         for name in files:
             if os.path.isfile(ext+'/done')==False:
@@ -94,7 +94,6 @@ def start():
             if _7z==1: os.system('7z x "$fullpath" -o"$ext/$n1/$n2"')
             if _un=='zip': os.system('unzip "$fullpath" -d "$ext/$n1/$n2"')
             if _un=='rar': os.system('unrar x "$fullpath" "$ext/$n1/$n2"')
-    avl.close()
     os.remove('available_ext')
     os.chmod(ext,stat.S_IRWXO)
 if sys.argv[1:]:
