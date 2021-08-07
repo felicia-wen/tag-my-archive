@@ -99,20 +99,20 @@ def start():
 if sys.argv[1:]:
     print(datetime.datetime.now(),"Start.")
 else:
-    print("Type 'tagmyarchive.py -h' for usages.")
+    print("Type 'python tagmyarchive.py -h' for usages.")
 try:
     options,otheropts=getopt.getopt(sys.argv[1:],"sx:o:h")
 except getopt.GetoptError:
-    print("Type 'tagmyarchive.py -h' for usages.")
+    print("Type 'python tagmyarchive.py -h' for usages.")
     sys.exit(2)
 for option,argument in options:
-    if option=='-h':print("tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>"),sys.exit()
+    if option=='-h':print("python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>"),sys.exit()
     if option=='-x':dlfolder,xg=argument,"passed"
     if option=='-o':ext,og=argument,"passed"
     if option=='-s':print("no args given,using defaults in script."),start()
 for otheropt in otheropts:
-    if otheropt=='help':print("tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>"),sys.exit()
-    else:print("Type 'tagmyarchive.py -h' for usages.")
+    if otheropt=='help':print("python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>"),sys.exit()
+    else:print("Type 'python tagmyarchive.py -h' for usages.")
 if os.name=='nt':
     print('unsupported system.')
     print("Running on",os.name)
