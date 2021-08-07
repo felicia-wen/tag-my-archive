@@ -68,7 +68,9 @@ def start():
             elif p7zip=='7z':
                 print(f'extract {fname} using p7zip.')
                 _7z=1
-            else: print("Unsupported Extention.")
+            else: 
+                print("Unsupported Extention.")
+                continue
             print("shell environment checked.")
             n=re.split(" +",fname,1)
             np=re.split(" - ?",fname,1)
