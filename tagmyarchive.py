@@ -61,7 +61,6 @@ def start():
             else: 
                 print("Extentions Not Found.")
                 continue
-            if ename==p7zip: print('p7zip Found,',end="")
             if ename==f"{ename}_only":
                 _un=ename
                 print(f"extract {fname} using un{ename}.")
