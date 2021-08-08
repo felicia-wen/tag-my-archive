@@ -9,11 +9,12 @@
         * unrar 
 ``` Shell
 Usages:
--h|help Display this message.
--x      Specify your Resource Dir.
--o      Specify the Output Dir.
--s      Use Pre-Defined Dir.
---noask Use Pre-Defined Dir and Dont Ask [y/n].
+    -h|help Display this message.
+    -x      Specify your Resource Dir.
+    -o      Specify the Output Dir.
+    -s      Signal to run.
+    --noask Dont Ask [y/n].
+    --mvdir move uncompressed Image/Video to OutputDir directly.
 Sample: python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>
 ```
 #### run with `-s`, set them in .py
