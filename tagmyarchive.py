@@ -42,13 +42,17 @@ def start():
                 f=open(ext+'/done','x')
                 f.close()
             f=open(ext+'/done','r+')
-            if name in f.read():
-                print(f"Recorded File:{name},Skipped.")
-                
+            frs=f.readlines()
+            skip=1
+            for fr in frs:
+                if name+'\n'==fr:
+                    print(f"Skip:Recorded File:{name},Skipping.")
+                    f.close
+                    break
+            else:skip=0
+            if skip!=0:
+                print("Skipped.")
                 continue
-            
-            f.write(name+'\n')
-            f.close
             fullpath=os.path.join(root,name)
             frontname=re.search('.+(?=\.)',name)
             if frontname: 
@@ -56,28 +60,24 @@ def start():
                 print("archive found.",fname)
             else: 
                 print("archive not found.")
-                
                 continue
-            
             extname=re.search('[^.]+$',name)
             if extname: 
                 ename=extname.group()
                 print("Extentions Found:",ename)
                 if ename not in ['rar','zip','7z']:
-                    print("Not archive format.")
+                    print("Skip:\tNot an archive format.")
                     if ename in ['jpg','png','mp4','avi']:
                         print(ename,"detected.")
                         if os.path.isdir(root) and mvdir==1 and root!=dlfolder:
-                            print(f"\t--mvdir given,move directory:{root} to {ext}")
+                            print(f"MvDir:\t--mvdir given,move directory:{root} to {ext}")
                             shutil.move(root,ext)
                             edit=1
                         continue
                     else:continue
             else: 
-                print("Extentions Not Found.")
-                
+                print("Skip:\tExtentions Not Found,Skipped.")
                 continue
-            
             if (ename=='zip' and zip_only=="zip") or (ename=='rar' and rar_only=='rar'):
                 _un=ename
                 print(f"Extract {fname} using un{ename}.")
@@ -86,46 +86,60 @@ def start():
                 _7z=1
             else: 
                 print("Shell:\tUnsupported Extention.")
-                
                 continue
-            
-            print("shell environment checked.")
-            n=re.split(" +",fname,1)
-            np=re.split(" - ?",fname,1)
-            if len(np)!=1:n=np
-            n1=n[0]
-            n2=n[1]
-            n0=re.search("(?<=\[)[^PMGB]*?(?=\])",fname)
+            print("Shell:\tenvironment checked.")
+            e2=re.split(" +",fname,1)
+            e1=re.split(" - ?",fname,1)
+            e=""
+            if len(e1)!=1:
+                e=e1
+                n1=e[0]
+                n2=e[1]
+            elif len(e2)!=1:
+                e=e2
+                n1=e[0]
+                n2=e[1]
+            n0=re.search("(?<=\[)[^PMGB]*?(?=\])|(?<=【)[^PMGB]*?(?=】)",fname)
+            n3=re.search("(?<=[(]).*?(?=[)])",fname)
             if n0: 
-                print("Special Matching triggered.",n0.group(0))
-                n1=n0.group(0)
-                n2=(fname).replace(f"[{n1}]","")
+                print("Special Matching triggered.",n0.group())
+                n1=n0.group()
+                n2=fname.replace(f"[{n1}]","")
+                n2=n2.replace(f"【{n1}】","")
             print("Author:",n1)
             print("Name:",n2)
             if n1=="" or n1==" " or n2=="" or n2==" ":
                 print ("No Author/Name Detected ,Skipped.")
-                
                 continue
-            
-            extdir=f"{ext}/{n1}/{n2}"
-            if os.path.isdir(extdir):print("dir already exists.\n",extdir)
+            if n3:
+                print("Extend Matching triggered.")
+                n3=n3.group(0)
+                n2=n2.replace(f"({n3})","")
+                n1=n1.replace(f"({n3})","")
+                extdir=f"{ext}/{n1}/{n2}/{n3}"
+            else: extdir=f"{ext}/{n1}/{n2}"
+            extdir=extdir.replace("_","")
+            print(f"Extracting {name} to {extdir}")
+            if os.path.isdir(extdir):print("dir already exists.")
             else:os.makedirs(extdir)
             os.environ['n1']=n1
             os.environ['n2']=n2
             os.environ['fullpath']=fullpath
+            os.environ['extdir']=extdir
             edit=1
             if os.name=='nt':
-                if _7z==1: os.system('7z x "%fullpath%" -o"%ext%/%n%/%n2%" -y')
-                if _un=='zip': os.system('unzip "%fullpath%" -d "%ext%/%n1%/%n2%"')
-                if _un=='rar': os.system('unrar x "%fullpath%" "%ext%/%n1%/%n2%"')
+                if _7z==1: osret=os.system('7z x "%fullpath%" -o"%extdir%" -y')
+                if _un=='zip': osret=os.system('unzip "%fullpath%" -d "%extdir%" -o')
+                if _un=='rar': osret=os.system('unrar x "%fullpath%" "%extdir%" y')
             else:
-                if _7z==1: os.system('7z x "$fullpath" -o"$ext/$n1/$n2" -y')
-                if _un=='zip': os.system('unzip "$fullpath" -d "$ext/$n1/$n2" -n')
-                if _un=='rar': os.system('unrar x "$fullpath" "$ext/$n1/$n2" y')
-    if edit==1:
-        os.chmod(extdir,stat.S_IROTH)
-        os.chmod(extdir,stat.S_IRWXG)
-        os.chmod(extdir,stat.S_IRWXU)
+                if _7z==1: osret=os.system('7z x "$fullpath" -o"$extdir" -y')
+                if _un=='zip': osret=os.system('unzip "$fullpath" -d "$extdir" -o')
+                if _un=='rar': osret=os.system('unrar x "$fullpath" "$extdir" y')
+            if osret==0:
+                f.write(name+'\n')
+                print("History Recorded.")
+            f.close
+        print("Permission has been set.")
     if os.path.isfile('available_ext'):os.remove('available_ext')
 help="""
 Usages:
