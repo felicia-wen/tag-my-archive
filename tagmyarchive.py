@@ -71,7 +71,8 @@ def start():
                             print(f"\t--mvdir given,move directory:{root} to {ext}")
                             shutil.move(root,ext)
                             edit=1
-                    continue
+                        continue
+                    else:continue
             else: 
                 print("Extentions Not Found.")
                 
