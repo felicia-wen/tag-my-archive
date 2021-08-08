@@ -2,7 +2,6 @@
 ## 原理
 通过正则表达式对压缩包名进行分析处理，并将其解压到根据表达式生成的文件夹中。
 ## Depends:
-* Unix-like shell environment
 * Packages
     * 7z 
     * if you already have 7z, you don't need the followings:
