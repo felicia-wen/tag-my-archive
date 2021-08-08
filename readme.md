@@ -1,6 +1,12 @@
 # Extract and sort your archives simply.  
 ## 原理
-通过正则表达式对压缩包名进行分析处理，并将其解压到根据表达式生成的文件夹中。
+通过正则表达式对压缩包名进行分析处理，并将其解压到生成的文件夹中。
+## Match
+* [] 【】
+* ' - ' '-'
+* ()  
+Folder:`/{Author}/{Work}/{(str)`}
+
 ## Depends:
 * Packages
     * 7z 
