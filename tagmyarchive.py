@@ -149,7 +149,7 @@ Usages:
 \t-s\tSignal to run.
 \t--noask\tDont Ask [y/n].
 \t--mvdir\tmove uncompressed Image/Video to OutputDir directly. 
-Sample:\tpython tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>
+Sample:\tpython tagmyarchive.py -s -x <ResourceDir> -o <ExtractTargetDir>
 """
 print(datetime.datetime.now(),"Start.")
 try:

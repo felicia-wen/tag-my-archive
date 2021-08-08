@@ -21,7 +21,7 @@ Usages:
     -s      Signal to run.
     --noask Dont Ask [y/n].
     --mvdir move uncompressed Image/Video to OutputDir directly.
-Sample: python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>
+Sample: python tagmyarchive.py -s -x <ResourceDir> -o <ExtractTargetDir>
 ```
 #### run with `-s`, set them in .py
 ``` Python
