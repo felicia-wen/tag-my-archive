@@ -13,7 +13,7 @@ Usages:
 -x      Specify your Resource Dir.
 -o      Specify the Output Dir.
 -s      Use Pre-Defined Dir.
---noask Dont Ask [y/n].
+--noask Use Pre-Defined Dir and Dont Ask [y/n].
 Sample: python tagmyarchive.py -x <ResourceDir> -o <ExtractTargetDir>
 ```
 #### run with `-s`, set them in .py
