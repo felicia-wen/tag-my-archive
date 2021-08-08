@@ -114,13 +114,13 @@ def start():
             os.environ['fullpath']=fullpath
             edit=1
             if os.name=='nt':
-                if _7z==1: os.system('7z x "%fullpath%" -o"%ext%/%n%/%n2%"')
+                if _7z==1: os.system('7z x "%fullpath%" -o"%ext%/%n%/%n2%" -y')
                 if _un=='zip': os.system('unzip "%fullpath%" -d "%ext%/%n1%/%n2%"')
                 if _un=='rar': os.system('unrar x "%fullpath%" "%ext%/%n1%/%n2%"')
             else:
-                if _7z==1: os.system('7z x "$fullpath" -o"$ext/$n1/$n2"')
-                if _un=='zip': os.system('unzip "$fullpath" -d "$ext/$n1/$n2"')
-                if _un=='rar': os.system('unrar x "$fullpath" "$ext/$n1/$n2"')
+                if _7z==1: os.system('7z x "$fullpath" -o"$ext/$n1/$n2" -y')
+                if _un=='zip': os.system('unzip "$fullpath" -d "$ext/$n1/$n2" -n')
+                if _un=='rar': os.system('unrar x "$fullpath" "$ext/$n1/$n2" y')
     if edit==1:
         os.chmod(extdir,stat.S_IROTH)
         os.chmod(extdir,stat.S_IRWXG)
