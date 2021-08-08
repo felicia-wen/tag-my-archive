@@ -99,26 +99,33 @@ def start():
                 e=e2
                 n1=e[0]
                 n2=e[1]
-            n0=re.search("(?<=\[)[^PMGB]*?(?=\])|(?<=【)[^PMGB]*?(?=】)",fname)
+            ns=re.search("(?<=\[)[^PMGB]*?(?=\])|(?<=【)[^PMGB]*?(?=】)",fname)
             n3=re.search("(?<=[(]).*?(?=[)])",fname)
-            if n0: 
-                print("Special Matching triggered.",n0.group())
-                n1=n0.group()
+            if ns: 
+                print("Special Matching triggered.",ns.group())
+                n1=ns.group()
                 n2=fname.replace(f"[{n1}]","")
                 n2=n2.replace(f"【{n1}】","")
-            print("Author:",n1)
-            print("Name:",n2)
-            if n1=="" or n1==" " or n2=="" or n2==" ":
-                print ("No Author/Name Detected ,Skipped.")
-                continue
+            for by in (" by "," By "):
+                if by in fname:
+                    print("by_string detected.")
+                    n1=re.split(by,fname,1)[1]
+                    n2=re.split(by,fname,1)[0]
             if n3:
-                print("Extend Matching triggered.")
+                print("Extended Matching triggered.")
                 n3=n3.group(0)
                 n2=n2.replace(f"({n3})","")
                 n1=n1.replace(f"({n3})","")
+                n3=re.sub("^(\s*_*)*|(\s*_*)*$","",n3)
                 extdir=f"{ext}/{n1}/{n2}/{n3}"
             else: extdir=f"{ext}/{n1}/{n2}"
-            extdir=extdir.replace("_","")
+            for n in (n1,n2):n=re.sub("^(\s*_*)*|(\s*_*)*$","",n)
+            print("Author:",n1)
+            print("Name:",n2)
+            if n3:print('Extented String=',n3)
+            if n1=="" or n1==" " or n2=="" or n2==" ":
+                print ("No Author/Name Detected ,Skipped.")
+                continue
             print(f"Extracting {name} to {extdir}")
             if os.path.isdir(extdir):print("dir already exists.")
             else:os.makedirs(extdir)
