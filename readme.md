@@ -15,12 +15,13 @@ Folder:`/{Author}/{Work}/{(str)`}
         * unrar 
 ``` Shell
 Usages:
-    -h|help Display this message.
-    -x      Specify your Resource Dir.
-    -o      Specify the Output Dir.
-    -s      Signal to run.
-    --noask Dont Ask [y/n].
-    --mvdir move uncompressed Image/Video to OutputDir directly.
+        -h|help Display this message.
+        -x<ResourceDir> Specify your Resource Dir.
+        -o<ExtractTargetDir>    Specify the Output Dir.
+        -s      Signal to run.
+        --noask Dont Ask [y/n].
+        --mvdir Move uncompressed Image/Video to OutputDir.
+        --exec<Addtional Args>   Exec Addtional Args in Shell prompt.
 Sample: python tagmyarchive.py -s -x <ResourceDir> -o <ExtractTargetDir>
 ```
 #### run with `-s`, set them in .py

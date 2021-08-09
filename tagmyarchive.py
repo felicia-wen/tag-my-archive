@@ -170,11 +170,12 @@ def start():
 help="""
 Usages:
 \t-h|help\tDisplay this message.
-\t-x\tSpecify your Resource Dir.
-\t-o\tSpecify the Output Dir.
+\t-x<ResourceDir>\tSpecify your Resource Dir.
+\t-o<ExtractTargetDir>\tSpecify the Output Dir.
 \t-s\tSignal to run.
 \t--noask\tDont Ask [y/n].
-\t--mvdir\tmove uncompressed Image/Video to OutputDir directly. 
+\t--mvdir\tMove uncompressed Image/Video to OutputDir. 
+\t--exec<Addtional Args>\t Exec Addtional Args in Shell prompt.
 Sample:\tpython tagmyarchive.py -s -x <ResourceDir> -o <ExtractTargetDir>
 """
 print(datetime.datetime.now(),"Start.")
