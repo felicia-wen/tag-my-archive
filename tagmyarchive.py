@@ -106,19 +106,19 @@ def start():
         elif os.path.isfile("7z.path"):
             cusf=open("7z.path")
             p7z=cusf.read()
-            path7z="r{}".format(p7z)
+            path7z=r"{}".format(p7z)
             cusf.close
             setpath=1
         else: 
             Shell("None of shell way extract method available.\a")
             if noask==0:
-                p7z=input("Enter your 7-Zip path here?\n[n/<path>]\n>")
-                path7z="r{}".format(p7z)
+                p7z=input("Enter your 7-Zip path here?\n[n/<path>]\n>").replace('"',"")
+                path7z=r"{}".format(p7z)
                 if os.path.isfile(path7z)==True:
-                    print("Vaild 7-Zip Path.")
+                    Shell("Windows","Vaild 7-Zip Path.")
                     cuspath=1
                 else:sys.exit()
-        Shell("Available extract method:",avlstr,path7z)
+        Shell("Available extract method: ",avlstr,path7z)
         if noask==0:
             y=input("Continue?\n[y/n]:")
             Info(y)
