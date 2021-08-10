@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
+from genericpath import isfile
 import os,re,sys,stat,getopt,datetime,shutil
 dlfolder="/opt/Download"
 ext="/opt/extract"
 noask=0
 mvdir=0
-
 class Colors:
 # SGR color constants
 # rene-d 2018
@@ -70,6 +70,7 @@ def Error(t,*r):
     print(Colors.NEGATIVE+Colors.RED+"Error:\t"+Colors.BLINK+t+Colors.END+Colors.UNDERLINE+Colors.LIGHT_RED+r+Colors.END)
 def start():
     edit=0
+    osret=1
     mv=0
     Info("ExtractTarget Dir:\t",ext)
     Info("Resource Dir:\t",dlfolder)
@@ -94,12 +95,27 @@ def start():
             if 'unrar' in avlstr: 
                 rar_only='rar'
                 Shell("unRAR detected.")
+        elif os.path.isfile(r"C:\Program Files\7-Zip\7z.exe")==True:
+            setpath=1
+            path7z=r"C:\Program Files\7-Zip\7z.exe"
+            Shell("Windows:","7z.exe Detected.",path7z)
+        elif os.path.isfile("7z.path"):
+            cusf=open("7z.path")
+            p7z=cusf.read()
+            path7z="r{}".format(p7z)
+            cusf.close
+            setpath=1
         else: 
-            shellNone=1
             Shell("None of shell way extract method available.\a")
-            sys.exit()
-        Shell("available extract method:",avlstr)
-        if noask!=1:
+            if noask==0:
+                p7z=input("Enter your 7-Zip path here?\n[n/<path>]\n>")
+                path7z="r{}".format(p7z)
+                if os.path.isfile(path7z)==True:
+                    print("Vaild 7-Zip Path.")
+                    cuspath=1
+                else:sys.exit()
+        Shell("Available extract method:",avlstr,path7z)
+        if noask==0:
             y=input("Continue?\n[y/n]:")
             Info(y)
             if y!="y":sys.exit()
@@ -212,23 +228,29 @@ def start():
             os.environ['n2']=n2
             os.environ['fullpath']=fullpath
             os.environ['extdir']=extdir
+            if setpath==1 or cuspath==1:os.environ['path7z']=path7z
             edit=1
             if os.name=='nt':
                 if _7z==1: osret=os.system('7z x "%fullpath%" -o"%extdir%" -y %arg7z%')
                 if _un=='zip': osret=os.system('unzip "%fullpath%" -d "%extdir%" -o %argUz%')
                 if _un=='rar': osret=os.system('unrar x "%fullpath%" "%extdir%" y %argUr%')
+                if setpath==1 or cuspath==1: osret=os.system('%path7z% x "%fullpath%" -o"%extdir%" -y %arg7z%')
                 os.system('chmod -R 775 "%extdir%"')
             else:
-                if _7z==1: osret=os.system('7z x "$fullpath" -o"$extdir" -mmt1 -y $arg7z')
+                if _7z==1: osret=os.system('7z x "$fullpath" -o"$extdir" -y $arg7z')
                 if _un=='zip': osret=os.system('unzip "$fullpath" -d "$extdir" -o $argUz')
                 if _un=='rar': osret=os.system('unrar x "$fullpath" "$extdir" y $argUr')
+                if setpath==1 or cuspath==1: osret=os.system('$path7z x "$fullpath" -o"$extdir" -y $arg7z')
                 os.system('chmod -R 775 "$extdir"')
             if osret==0:
                 f.write(name+'\n')
                 Info("History Recorded.")
             else:Error("Encountered with error:",str(osret))
             f.close
-    f.close
+    if osret==0 and cuspath==1:
+        cusf=open("7z.path","x")
+        cusf.write(path7z)
+        cusf.close
     if os.path.isfile('available_ext'):os.remove('available_ext')
     
 help="""
