@@ -4,9 +4,10 @@ dlfolder="/opt/Download"
 ext="/opt/extract"
 noask=0
 mvdir=0
+
+class Colors:
 # SGR color constants
 # rene-d 2018
-class Colors:
     BLACK = "\033[0;30m"
     RED = "\033[0;31m"
     GREEN = "\033[0;32m"
@@ -31,22 +32,30 @@ class Colors:
     NEGATIVE = "\033[7m"
     CROSSED = "\033[9m"
     END = "\033[0m"
+class Match:
+    def All(str=".*"): return f"(?<=(?:\[|【|\(|（)){str}(?=(?:\]|】|\)|）))"
+    def inBrackets(str="[^PMGB]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
+    def inParentheses(str=".*"):return f"(?<=(?:\(|（)){str}(?=(?:\)|）))"
+    def withBrackets(str="[^PMGB]+"):return f"(?:\[|【){str}(?:\]|】)"
+    def withParentheses(str=".*"):return f"(?:\(|（){str}(?:\)|）)"
 def Shell(t,*r):
-    r=''.join(r)
+    r=''.join(map(str,r))
     print(Colors.GREEN+"Shell:\t"+Colors.LIGHT_GREEN+t+Colors.CYAN+r+Colors.END)
 def Skip(t,*r):
-    r=''.join(r)
+    r=''.join(map(str,r))
     print(Colors.FAINT+Colors.CYAN+"Skip:\t"+Colors.LIGHT_CYAN+t+Colors.LIGHT_WHITE+r+Colors.END)
 def Info(t,*r):
-    r=''.join(r)
+    r=''.join(map(str,r))
     print(Colors.BLUE+"Info:\t"+Colors.LIGHT_BLUE+t+Colors.LIGHT_PURPLE+r+Colors.END)
 def Warn(t,*r):
-    r=''.join(r)
+    r=''.join(map(str,r))
     print(Colors.NEGATIVE+Colors.BROWN+"Warning:\t"+Colors.YELLOW+t+Colors.LIGHT_WHITE+r+Colors.END)
+def Debug(t,*r):
+    r=''.join(map(str,r))
+    print(Colors.NEGATIVE+Colors.BOLD+Colors.BROWN+"Debug:\t"+Colors.YELLOW+t+Colors.LIGHT_WHITE+r+Colors.END)
 def Error(t,*r):
-    r=''.join(r)
+    r=''.join(map(str,r))
     print(Colors.NEGATIVE+Colors.RED+"Error:\t"+Colors.BLINK+t+Colors.END+Colors.UNDERLINE+Colors.LIGHT_RED+r+Colors.END)
-
 def start():
     edit=0
     mv=0
@@ -103,9 +112,9 @@ def start():
             frontname=re.search('.+(?=\.)',name)
             if frontname: 
                 fname=frontname.group()
-                Info("archive found.",fname)
+                Info("Archive Found.",fname)
             else: 
-                Skip("archive not found.")
+                Skip("Archive Not Found.")
                 continue
             extname=re.search('[^.]+$',name)
             if extname: 
@@ -114,7 +123,7 @@ def start():
                 if ename not in ['rar','zip','7z']:
                     Skip("Not an archive format.")
                     if ename in ['jpg','png','mp4','avi']:
-                        Info(ename,"detected.")
+                        Info(ename,"Detected.")
                         if os.path.isdir(root) and mvdir==1 and root!=dlfolder:
                             mv=1
                             edit=1
@@ -131,56 +140,59 @@ def start():
             else: 
                 Skip("Unsupported Extention.")
                 continue
-            Shell("environment checked.")
+            Shell("Environment Checked.")
             if mv==1:
                 fname=re.search("[^/]*$",root).group()
-                Info("fname changed to:",fname)
-            e2=re.split(" +",fname,1)
+                Info("fname changed to:",fname)            
+            ns=re.search(Match.inBrackets(),fname)
+            ne=re.search(Match.inParentheses(),fname)
             e1=re.split("-+",fname,1)
+            e2=re.split(" +",fname,1)
             e=""
-            _match=0
-            if len(e1)!=1:
-                Info("Using fitter='-'")
-                e=e1
-                n1=e[0]
-                n2=e[1]
-                _match=1
-            elif len(e2)!=1:
-                Info("Using fitter=' '")
-                e=e2
-                n1=e[0]
-                n2=e[1]
-                _match=1
-            ns=re.search("(?<=\[)[^PMGB]*?(?=\])|(?<=【)[^PMGB]*?(?=】)",fname)
-            n3=re.search("(?<=[(]).*?(?=[)])|(?<=[（]).*?(?=[）])",fname)
+            _match,_case=0,0
             if ns: 
-                Info("Special Matching triggered,Overwrite.",ns.group())
+                _case=1
+                Info("Special Matching triggered.",ns.group())
                 n1=ns.group()
-                n2=fname.replace(f"[{n1}]","")
-                n2=n2.replace(f"【{n1}】","")
-                _match=1
+                n2=re.sub(Match.withBrackets(),"",fname)
             for by in (" by "," By "):
                 if by in fname:
-                    Info("by_string detected,Overwrite.")
+                    _case=1
+                    Info(f"{by}_string detected.")
                     n1=re.split(by,fname,1)[1]
                     n2=re.split(by,fname,1)[0]
+            _match=_case
+            #Debug("e1:",len(e1))
+            #Debug("e2:",len(e2))
+            if _case==0:
+                if len(e1)==2:
+                    Info("Using fitter=",'-')
+                    e=e1
+                    n1=e[0]
+                    n2=e[1]
                     _match=1
-            if n3 and _match==1:
+                elif len(e2)==2:
+                    Info("Using fitter=",'Space')
+                    e=e2
+                    n1=e[0]
+                    n2=e[1]
+                    _match=1
+            if ne:
                 Info("Extended Matching triggered.")
-                n3=n3.group(0)
-                n2=n2.replace(f"({n3})","")
-                n1=n1.replace(f"({n3})","")
-                n3=re.sub("^(\s*_*)*|(\s*_*)*$","",n3)
+                n3=ne.group()
+                n2=re.sub(Match.withParentheses(),"",n2)
+                n1=re.sub(Match.withParentheses(),"",n1)
             n1=re.sub("^(\s*_*)*|(\s*_*)*$","",n1)
             n2=re.sub("^(\s*_*)*|(\s*_*)*$","",n2)
             Info("Author:",n1)
             Info("Name:",n2)
-            if n3 and _match==1:extdir=f"{ext}/{n1}/{n2}/{n3}"
+            if ne and _match==1:
+                extdir=f"{ext}/{n1}/{n2}/{n3}"
             else: extdir=f"{ext}/{n1}/{n2}"
             if _match==0:
                 Skip("No Author/Name Detected ,Skipped.")
                 continue
-            if n3:Info('Extented String=',n3)
+            if ne:Info('Extented String=',n3)
             if os.path.isdir(extdir):Warn("dir already exists.")
             else:os.makedirs(extdir),Info("mkdir:",extdir)
             if mv==1:
@@ -194,14 +206,14 @@ def start():
             os.environ['extdir']=extdir
             edit=1
             if os.name=='nt':
-                if _7z==1: osret=os.system('7z x "%fullpath%" -o"%extdir%" -y %arg%')
-                if _un=='zip': osret=os.system('unzip "%fullpath%" -d "%extdir%" -o %arg%')
-                if _un=='rar': osret=os.system('unrar x "%fullpath%" "%extdir%" y %arg%')
+                if _7z==1: osret=os.system('7z x "%fullpath%" -o"%extdir%" -y %arg7z%')
+                if _un=='zip': osret=os.system('unzip "%fullpath%" -d "%extdir%" -o %argUz%')
+                if _un=='rar': osret=os.system('unrar x "%fullpath%" "%extdir%" y %argUr%')
                 os.system('chmod -R 775 "%extdir%"')
             else:
-                if _7z==1: osret=os.system('7z x "$fullpath" -o"$extdir" -mmt1 -y $arg')
-                if _un=='zip': osret=os.system('unzip "$fullpath" -d "$extdir" -o $arg')
-                if _un=='rar': osret=os.system('unrar x "$fullpath" "$extdir" y $arg')
+                if _7z==1: osret=os.system('7z x "$fullpath" -o"$extdir" -mmt1 -y $arg7z')
+                if _un=='zip': osret=os.system('unzip "$fullpath" -d "$extdir" -o $argUz')
+                if _un=='rar': osret=os.system('unrar x "$fullpath" "$extdir" y $argUr')
                 os.system('chmod -R 775 "$extdir"')
             if osret==0:
                 f.write(name+'\n')
@@ -220,11 +232,11 @@ Usages:
 \t-s                       Signal to run.
 \t--noask                  Dont Ask [y/n].
 \t--mvdir                  Move uncompressed Image/Video to OutputDir. 
-\t--exec <Addtional Args>  Exec Addtional Args in Shell prompt.
+\t--exec<7z|Ur|Uz> <Addtional Args>  Exec Addtional Args in 7z,UnRAR,UnZip prompts.
 """
 print(datetime.datetime.now(),Colors.BOLD+"Start.")
 try:
-    options,otheropts=getopt.getopt(sys.argv[1:],"sx:o:h",['noask','mvdir','exec='])
+    options,otheropts=getopt.getopt(sys.argv[1:],"sx:o:h",['noask','mvdir','exec7z=','execUr=','execUz='])
 except getopt.GetoptError:
     Info("Type 'python tagmyarchive.py -h' for usages.")
     sys.exit(2)
@@ -244,7 +256,9 @@ for option,argument in options:
         Warn("\t--mvdir given,this may cause system impact.")
         mvdir=1
     if option=='-s':sta=1
-    if option=='--exec':os.environ['arg']=argument
+    if option=='--exec7z':os.environ['arg7z']=argument
+    if option=='--execUr':os.environ['argUr']=argument
+    if option=='--execUz':os.environ['argUz']=argument
     else:os.environ['arg']=''
 for otheropt in otheropts:
     if otheropt=='help':Info(help),sys.exit()
