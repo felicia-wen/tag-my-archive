@@ -48,7 +48,10 @@ class Quirk:
                 Info(f"{by}_string detected.")
                 n1=re.split(by,str,1)[1]
                 n2=re.split(by,str,1)[0]
-        return _case,n1,n2
+                return _case,n1,n2
+            else:
+                Debug("noby=1")
+                return 1
     def Cleanup(str):return re.sub("^(\s*_*)*|(\s*_*)*$","",str)
 def Shell(t,*r):
     r=''.join(map(str,r))
@@ -97,6 +100,7 @@ def start():
                 Shell("unRAR detected.")
         elif os.path.isfile(r"C:\Program Files\7-Zip\7z.exe")==True:
             setpath=1
+            p7z="C:\Program Files\7-Zip\7z.exe"
             path7z=r"C:\Program Files\7-Zip\7z.exe"
             Shell("Windows:","7z.exe Detected.",path7z)
         elif os.path.isfile("7z.path"):
@@ -162,6 +166,7 @@ def start():
             if (ename=='zip' and zip_only=="zip") or (ename=='rar' and rar_only=='rar') and mv!=1:
                 _un=ename
                 Info(f"Extract {fname} using un{ename}.")
+            elif setpath==1 or cuspath==1:Info("Windows:","Extract using",path7z)
             elif p7zip=='7z':
                 Info(f'Extract {fname} using p7zip.')
                 _7z=1
@@ -181,7 +186,9 @@ def start():
                 Info("Special Matching triggered.",ns.group())
                 n1=ns.group()
                 n2=re.sub(Match.withBrackets(),"",fname)
-            _case,n1,n2=Quirk.SplitBy(fname)
+            statusby=Quirk.SplitBy(fname)
+            if statusby!=1:
+                _case,n1,n2=statusby
             _match=_case
             #Debug("e1:",len(e1))
             #Debug("e2:",len(e2))
@@ -228,20 +235,20 @@ def start():
             os.environ['n2']=n2
             os.environ['fullpath']=fullpath
             os.environ['extdir']=extdir
-            if setpath==1 or cuspath==1:os.environ['path7z']=path7z
+            if setpath==1 or cuspath==1:os.environ['path7z']=p7z
             edit=1
             if os.name=='nt':
-                if _7z==1: osret=os.system('7z x "%fullpath%" -o"%extdir%" -y %arg7z%')
-                if _un=='zip': osret=os.system('unzip "%fullpath%" -d "%extdir%" -o %argUz%')
-                if _un=='rar': osret=os.system('unrar x "%fullpath%" "%extdir%" y %argUr%')
-                if setpath==1 or cuspath==1: osret=os.system('%path7z% x "%fullpath%" -o"%extdir%" -y %arg7z%')
-                os.system('chmod -R 775 "%extdir%"')
+                if _7z==1: osret=os.system('7z x ""%fullpath%"" -o""%extdir%"" -y %arg7z%')
+                if _un=='zip': osret=os.system('unzip ""%fullpath%"" -d ""%extdir%"" -o %argUz%')
+                if _un=='rar': osret=os.system('unrar x ""%fullpath%"" ""%extdir%"" y %argUr%')
+                if setpath==1 or cuspath==1: osret=os.system('""%path7z%"" x ""%fullpath%"" -o""%extdir%"" -y %arg7z%')
+                os.system('chmod -R 775 ""%extdir%""')
             else:
-                if _7z==1: osret=os.system('7z x "$fullpath" -o"$extdir" -y $arg7z')
-                if _un=='zip': osret=os.system('unzip "$fullpath" -d "$extdir" -o $argUz')
-                if _un=='rar': osret=os.system('unrar x "$fullpath" "$extdir" y $argUr')
-                if setpath==1 or cuspath==1: osret=os.system('$path7z x "$fullpath" -o"$extdir" -y $arg7z')
-                os.system('chmod -R 775 "$extdir"')
+                if _7z==1: osret=os.system('7z x ""$fullpath"" -o""$extdir"" -y $arg7z')
+                if _un=='zip': osret=os.system('unzip ""$fullpath"" -d ""$extdir"" -o $argUz')
+                if _un=='rar': osret=os.system('unrar x ""$fullpath"" ""$extdir"" y $argUr')
+                if setpath==1 or cuspath==1: osret=os.system('""$path7z"" x ""$fullpath"" -o""$extdir"" -y $arg7z')
+                os.system('chmod -R 775 ""$extdir""')
             if osret==0:
                 f.write(name+'\n')
                 Info("History Recorded.")
@@ -295,6 +302,6 @@ for otheropt in otheropts:
     else:Info("Type 'python tagmyarchive.py -h' for usages.") 
 if os.name=='nt':
     Info("System:\t",os.name)
-try:
-    if sta==1 or (_x==1 and _o==1):start()
-except NameError:Info("Type 'python tagmyarchive.py -h' for usages.")
+#try:
+if sta==1 or (_x==1 and _o==1):start()
+#except NameError:Info("Type 'python tagmyarchive.py -h' for usages.")
