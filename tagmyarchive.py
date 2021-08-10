@@ -226,13 +226,13 @@ def start():
 help="""
 Sample:\tpython tagmyarchive.py -s -x <ResourceDir> -o <ExtractTargetDir>
 Usages:
-\t-h                       Display this message.
-\t-x <ResourceDir>         Specify your Resource Dir.
-\t-o <ExtractTargetDir>    Specify the Output Dir.
-\t-s                       Signal to run.
-\t--noask                  Dont Ask [y/n].
-\t--mvdir                  Move uncompressed Image/Video to OutputDir. 
-\t--exec<7z|Ur|Uz> <Addtional Args>  Exec Addtional Args in 7z,UnRAR,UnZip prompts.
+\t-h                                 Display this message.
+\t-x <ResourceDir>                   Specify your Resource Dir.
+\t-o <ExtractTargetDir>              Specify the Output Dir.
+\t-s                                 Signal to run.
+\t--noask                            Dont Ask [y/n].
+\t--mvdir                            Move uncompressed Image/Video to OutputDir. 
+\t--exec<7z|Ur|Uz> <Addtional Args>  Execute Addtional Arguments in 7z,UnRAR,UnZip prompts.
 """
 print(datetime.datetime.now(),Colors.BOLD+"Start.")
 try:
