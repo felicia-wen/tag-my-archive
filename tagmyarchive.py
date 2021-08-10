@@ -112,7 +112,7 @@ def start():
             frontname=re.search('.+(?=\.)',name)
             if frontname: 
                 fname=frontname.group()
-                Info("Archive Found.",fname)
+                Info("Archive Found:",fname)
             else: 
                 Skip("Archive Not Found.")
                 continue
@@ -146,8 +146,6 @@ def start():
                 Info("fname changed to:",fname)            
             ns=re.search(Match.inBrackets(),fname)
             ne=re.search(Match.inParentheses(),fname)
-            e1=re.split("-+",fname,1)
-            e2=re.split(" +",fname,1)
             e=""
             _match,_case=0,0
             if ns: 
@@ -165,6 +163,9 @@ def start():
             #Debug("e1:",len(e1))
             #Debug("e2:",len(e2))
             if _case==0:
+                fname=re.sub(Match.withBrackets('.*'),"",fname)
+                e1=re.split("-+",fname,1)
+                e2=re.split(" +",fname,1)
                 if len(e1)==2:
                     Info("Using fitter=",'-')
                     e=e1
@@ -196,7 +197,7 @@ def start():
             if os.path.isdir(extdir):Warn("dir already exists.")
             else:os.makedirs(extdir),Info("mkdir:",extdir)
             if mv==1:
-                Warn(f"MvDir:\t--mvdir given,move directory:{fullpath} to {extdir}")
+                Warn(f"MvDir:\t--mvdir given,move directory:{fullpath} --> {extdir}")
                 shutil.move(fullpath,extdir)
                 continue
             Info(f"Extracting {name} to {extdir}")
