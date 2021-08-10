@@ -302,6 +302,6 @@ for otheropt in otheropts:
     else:Info("Type 'python tagmyarchive.py -h' for usages.") 
 if os.name=='nt':
     Info("System:\t",os.name)
-#try:
-if sta==1 or (_x==1 and _o==1):start()
-#except NameError:Info("Type 'python tagmyarchive.py -h' for usages.")
+try:
+    if sta==1 or (_x==1 and _o==1):start()
+except NameError:Info("Type 'python tagmyarchive.py -h' for usages.")
