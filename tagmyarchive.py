@@ -72,6 +72,7 @@ def Error(t,*r):
     print(Colors.NEGATIVE+Colors.RED+"Error:\t"+Colors.BLINK+t+Colors.END+Colors.UNDERLINE+Colors.LIGHT_RED+r+Colors.END)
 def start():
     edit=0
+    path7z=""
     osret=1
     mv=0
     Info("ExtractTarget Dir:\t",ext)
