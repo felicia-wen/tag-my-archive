@@ -3,11 +3,23 @@
 ## Matching
 ```Python
 class Match:
-        def All(str=".*"): return f"(?<=(?:\[|【|\(|（)){str}(?=(?:\]|】|\)|）))"
-        def inBrackets(str="[^PMGB]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
-        def inParentheses(str=".*"):return f"(?<=(?:\(|（)){str}(?=(?:\)|）))"
-        def withBrackets(str="[^PMGB]+"):return f"(?:\[|【){str}(?:\]|】)"
-        def withParentheses(str=".*"):return f"(?:\(|（){str}(?:\)|）)"
+    def All(str=".*"): return f"(?<=(?:\[|【|\(|（)){str}(?=(?:\]|】|\)|）))"
+    def inBrackets(str="[^PMGB]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
+    def inParentheses(str=".*"):return f"(?<=(?:\(|（)){str}(?=(?:\)|）))"
+    def withBrackets(str="[^PMGB]+"):return f"(?:\[|【){str}(?:\]|】)"
+    def withParentheses(str=".*"):return f"(?:\(|（){str}(?:\)|）)"
+class Quirk:    
+    def SplitMinus(str):return re.split("-+",str,1)
+    def SplitSpace(str):return re.split(" +",str,1)
+    def SplitBy(str):
+        for by in (" by "," By "):
+            if by in str:
+                _case=1
+                Info(f"{by}_string detected.")
+                n1=re.split(by,str,1)[1]
+                n2=re.split(by,str,1)[0]
+        return _case,n1,n2
+    def Cleanup(str):return re.sub("^(\s*_*)*|(\s*_*)*$","",str)
 ```
 ## Depends:
 * Packages

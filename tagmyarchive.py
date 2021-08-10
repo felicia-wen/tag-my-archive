@@ -38,6 +38,18 @@ class Match:
     def inParentheses(str=".*"):return f"(?<=(?:\(|（)){str}(?=(?:\)|）))"
     def withBrackets(str="[^PMGB]+"):return f"(?:\[|【){str}(?:\]|】)"
     def withParentheses(str=".*"):return f"(?:\(|（){str}(?:\)|）)"
+class Quirk:    
+    def SplitMinus(str):return re.split("-+",str,1)
+    def SplitSpace(str):return re.split(" +",str,1)
+    def SplitBy(str):
+        for by in (" by "," By "):
+            if by in str:
+                _case=1
+                Info(f"{by}_string detected.")
+                n1=re.split(by,str,1)[1]
+                n2=re.split(by,str,1)[0]
+        return _case,n1,n2
+    def Cleanup(str):return re.sub("^(\s*_*)*|(\s*_*)*$","",str)
 def Shell(t,*r):
     r=''.join(map(str,r))
     print(Colors.GREEN+"Shell:\t"+Colors.LIGHT_GREEN+t+Colors.CYAN+r+Colors.END)
@@ -153,27 +165,22 @@ def start():
                 Info("Special Matching triggered.",ns.group())
                 n1=ns.group()
                 n2=re.sub(Match.withBrackets(),"",fname)
-            for by in (" by "," By "):
-                if by in fname:
-                    _case=1
-                    Info(f"{by}_string detected.")
-                    n1=re.split(by,fname,1)[1]
-                    n2=re.split(by,fname,1)[0]
+            _case,n1,n2=Quirk.SplitBy(fname)
             _match=_case
             #Debug("e1:",len(e1))
             #Debug("e2:",len(e2))
             if _case==0:
                 fname=re.sub(Match.withBrackets('.*'),"",fname)
-                e1=re.split("-+",fname,1)
-                e2=re.split(" +",fname,1)
+                e1=Quirk.SplitMinus(fname)
+                e2=Quirk.SplitSpace(fname)
                 if len(e1)==2:
-                    Info("Using fitter=",'-')
+                    Info("Using fitter:",'-')
                     e=e1
                     n1=e[0]
                     n2=e[1]
                     _match=1
                 elif len(e2)==2:
-                    Info("Using fitter=",'Space')
+                    Info("Using fitter:",'Space')
                     e=e2
                     n1=e[0]
                     n2=e[1]
@@ -183,8 +190,8 @@ def start():
                 n3=ne.group()
                 n2=re.sub(Match.withParentheses(),"",n2)
                 n1=re.sub(Match.withParentheses(),"",n1)
-            n1=re.sub("^(\s*_*)*|(\s*_*)*$","",n1)
-            n2=re.sub("^(\s*_*)*|(\s*_*)*$","",n2)
+            n1=Quirk.Cleanup(n1)
+            n2=Quirk.Cleanup(n2)
             Info("Author:",n1)
             Info("Name:",n2)
             if ne and _match==1:
@@ -193,7 +200,7 @@ def start():
             if _match==0:
                 Skip("No Author/Name Detected ,Skipped.")
                 continue
-            if ne:Info('Extented String=',n3)
+            if ne:Info('Extented String:',n3)
             if os.path.isdir(extdir):Warn("dir already exists.")
             else:os.makedirs(extdir),Info("mkdir:",extdir)
             if mv==1:
