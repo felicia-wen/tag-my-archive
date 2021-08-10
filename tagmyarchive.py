@@ -49,8 +49,7 @@ class Quirk:
                 n1=re.split(by,str,1)[1]
                 n2=re.split(by,str,1)[0]
                 return _case,n1,n2
-            else:
-                return 1
+            else:return 1
     def Cleanup(str):return re.sub("^(\s*_*)*|(\s*_*)*$","",str)
 def Shell(t,*r):
     r=''.join(map(str,r))
