@@ -66,6 +66,3 @@ Usages:
 dlfolder=""  # archives directory
 ext=""       # extract directory
 ```
-BEFORE | AFTER
--------|------
-![before](/before.png) | ![after](after.png)
