@@ -4,9 +4,9 @@
 ```Python
 class Match:
     def All(str=".*"): return f"(?<=(?:\[|【|\(|（)){str}(?=(?:\]|】|\)|）))"
-    def inBrackets(str="[^PMGB]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
+    def inBrackets(str="[^PMGB\W]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
     def inParentheses(str=".*"):return f"(?<=(?:\(|（)){str}(?=(?:\)|）))"
-    def withBrackets(str="[^PMGB]+"):return f"(?:\[|【){str}(?:\]|】)"
+    def withBrackets(str="[^PMGB\W]+"):return f"(?:\[|【){str}(?:\]|】)"
     def withParentheses(str=".*"):return f"(?:\(|（){str}(?:\)|）)"
 class Quirk:    
     def SplitMinus(str):return re.split("-+",str,1)

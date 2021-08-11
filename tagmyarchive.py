@@ -34,9 +34,9 @@ class Colors:
     END = "\033[0m"
 class Match:
     def All(str=".*"): return f"(?<=(?:\[|【|\(|（)){str}(?=(?:\]|】|\)|）))"
-    def inBrackets(str="[^PMGB]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
+    def inBrackets(str="[^PMGB\W]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
     def inParentheses(str=".*"):return f"(?<=(?:\(|（)){str}(?=(?:\)|）))"
-    def withBrackets(str="[^PMGB]+"):return f"(?:\[|【){str}(?:\]|】)"
+    def withBrackets(str="[^PMGB\W]+"):return f"(?:\[|【){str}(?:\]|】)"
     def withParentheses(str=".*"):return f"(?:\(|（){str}(?:\)|）)"
 class Quirk:    
     def SplitMinus(str):return re.split("-+",str,1)
@@ -156,7 +156,7 @@ def start():
                 if ename not in ['rar','zip','7z']:
                     Skip("Not an archive format.")
                     if ename in ['jpg','png','mp4','avi']:
-                        Info(ename,"Detected.")
+                        Info(ename," Detected.")
                         if os.path.isdir(root) and mvdir==1 and root!=dlfolder:
                             mv=1
                             edit=1
@@ -180,6 +180,7 @@ def start():
                 Info("fname changed to:",fname)            
             ns=re.search(Match.inBrackets(),fname)
             ne=re.search(Match.inParentheses(),fname)
+            n1,n2,n3="","",""
             e=""
             _match,_case=0,0
             if ns: 
@@ -221,7 +222,7 @@ def start():
             if ne and _match==1:
                 extdir=f"{ext}/{n1}/{n2}/{n3}"
             else: extdir=f"{ext}/{n1}/{n2}"
-            if _match==0:
+            if _match==0 and mv==0:
                 Skip("No Author/Name Detected ,Skipped.")
                 continue
             if ne:Info('Extented String:',n3)
@@ -239,17 +240,17 @@ def start():
             if setpath==1 or cuspath==1:os.environ['path7z']=p7z
             edit=1
             if os.name=='nt':
-                if _7z==1: osret=os.system('7z x ""%fullpath%"" -o""%extdir%"" -y %arg7z%')
-                if _un=='zip': osret=os.system('unzip ""%fullpath%"" -d ""%extdir%"" -o %argUz%')
-                if _un=='rar': osret=os.system('unrar x ""%fullpath%"" ""%extdir%"" y %argUr%')
-                if setpath==1 or cuspath==1: osret=os.system('""%path7z%"" x ""%fullpath%"" -o""%extdir%"" -y %arg7z%')
-                os.system('chmod -R 775 ""%extdir%""')
+                if _7z==1: osret=os.system('7z x "%fullpath%" -o"%extdir%" -y %arg7z%')
+                if _un=='zip': osret=os.system('unzip "%fullpath%" -d "%extdir%" -o %argUz%')
+                if _un=='rar': osret=os.system('unrar x "%fullpath%" "%extdir%" y %argUr%')
+                if setpath==1 or cuspath==1: osret=os.system('""%path7z%"" x "%fullpath%" -o"%extdir%" -y %arg7z%')
+                os.system('chmod -R 775 "%extdir%"')
             else:
-                if _7z==1: osret=os.system('7z x ""$fullpath"" -o""$extdir"" -y $arg7z')
-                if _un=='zip': osret=os.system('unzip ""$fullpath"" -d ""$extdir"" -o $argUz')
-                if _un=='rar': osret=os.system('unrar x ""$fullpath"" ""$extdir"" y $argUr')
-                if setpath==1 or cuspath==1: osret=os.system('""$path7z"" x ""$fullpath"" -o""$extdir"" -y $arg7z')
-                os.system('chmod -R 775 ""$extdir""')
+                if _7z==1: osret=os.system('7z x "$fullpath" -o"$extdir" -y $arg7z')
+                if _un=='zip': osret=os.system('unzip "$fullpath" -d "$extdir" -o $argUz')
+                if _un=='rar': osret=os.system('unrar x "$fullpath" "$extdir" y $argUr')
+                if setpath==1 or cuspath==1: osret=os.system('"$path7z" x "$fullpath" -o"$extdir" -y $arg7z')
+                os.system('chmod -R 775 "$extdir"')
             if osret==0:
                 f.write(name+'\n')
                 Info("History Recorded.")
