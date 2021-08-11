@@ -10,7 +10,7 @@ elif FileName Contain MinusSigns:
 elif FileName Contain Space:
     Make Dir "LetterBeforeFirstSpace/OtherLetter"
 elif FileName Contain Parentheses:
-    Make Dir "DirMakeBefore<NoParentheses>/LetterInFirstParentheis"
+    Make Dir "DirMakeBefore<NoParentheses>/LetterInFirstParenthesis"
 elif Nothing Matched in FileName:
     if UpstairDir of FileName Matched:
         FileName=UpstairDirName 
@@ -40,6 +40,7 @@ class Quirk:
     def Cleanup(str):return re.sub("^(\s*_*)*|(\s*_*)*$","",str)
 ```
 ## Depends:
+* Unix/NT
 * Packages
     * 7z 
     * if you already have 7z, you don't need the followings:
