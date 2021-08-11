@@ -1,6 +1,7 @@
 # TagMyArchive! 
 >Extract and sort your archives simply.
 ## Matching
+### Logic in Human Language
 ```Python
 if FileName Contain Brackets:
     Make Dir "LetterInFirstBracket/OtherLetter"
@@ -14,7 +15,9 @@ elif Nothing Matched in FileName:
     if UpstairDir of FileName Matched:
         FileName=UpstairDirName 
         Make Above Dir
-else:Skip this file 
+else:Skip this file
+```
+### Some Regular Expression
 ```Python
 class Match:
     def All(str=".*"): return f"(?<=(?:\[|【|\(|（)){str}(?=(?:\]|】|\)|）))"
@@ -29,7 +32,7 @@ class Quirk:
         for by in (" by "," By "):
             if by in str:
                 _case=1
-                Info(f"{by}_string detected.")
+                Info(f"{by}_string Detected.")
                 n1=re.split(by,str,1)[1]
                 n2=re.split(by,str,1)[0]
                 return _case,n1,n2
