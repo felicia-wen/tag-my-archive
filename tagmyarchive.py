@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from genericpath import isfile
 import os,re,sys,stat,getopt,datetime,shutil
 dlfolder="/opt/Download"
 ext="/opt/extract"
@@ -229,6 +228,9 @@ def start():
             if os.path.isdir(extdir):Warn("dir already exists.")
             else:os.makedirs(extdir),Info("mkdir:",extdir)
             if mv==1:
+                if os.path.isfile(extdir+'/'+name):
+                    Warn(name,"  Already exists.Overwriting.")
+                    os.remove(extdir+'/'+name)
                 Warn(f"MvDir:\t--mvdir given,move directory:{fullpath} --> {extdir}")
                 shutil.move(fullpath,extdir)
                 continue
