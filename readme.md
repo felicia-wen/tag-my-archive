@@ -1,7 +1,7 @@
 # TagMyArchive! 
 >Extract and sort your archives simply.
 ## Matching
-### Logic in Human Language
+### Main Logic in Human Language
 ```Python
 if FileName Contain Brackets:
     Make Dir "LetterInFirstBracket/OtherLetter"
@@ -59,7 +59,7 @@ Usages:
         --mvdir                            Move uncompressed Image/Video to OutputDir. 
         --exec<7z|Ur|Uz> <Addtional Args>  Execute Addtional Arguments in 7z,UnRAR,UnZip prompts.
 ```
-### run without `-x -o`
+### Run Without `-x -o`
 ``` Python
 ./tagmyarchive.py
 
