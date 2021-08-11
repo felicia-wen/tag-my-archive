@@ -2,6 +2,20 @@
 >Extract and sort your archives simply.
 ## Matching
 ```Python
+if FileName Contain Brackets:
+    Make Dir "LetterInFirstBracket/OtherLetter"
+elif FileName Contain MinusSigns:
+    Make Dir "LetterBeforeFirstMinusSign/OtherLetter"
+elif FileName Contain Space:
+    Make Dir "LetterBeforeFirstSpace/OtherLetter"
+elif FileName Contain Parentheses:
+    Make Dir "DirMakeBefore<NoParentheses>/LetterInFirstParentheis"
+elif Nothing Matched in FileName:
+    if UpstairDir of FileName Matched:
+        FileName=UpstairDirName 
+        Make Above Dir
+else:Skip this file 
+```Python
 class Match:
     def All(str=".*"): return f"(?<=(?:\[|【|\(|（)){str}(?=(?:\]|】|\)|）))"
     def inBrackets(str="[^PMGB\W]+"):return f"(?<=(?:\[|【)){str}(?=(?:\]|】))"
