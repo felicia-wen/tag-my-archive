@@ -74,6 +74,8 @@ def start():
     path7z=""
     osret=1
     mv=0
+    setpath=0
+    cuspath=0
     Info("ExtractTarget Dir:\t",ext)
     Info("Resource Dir:\t",dlfolder)
     p7zip,zip_only,rar_only=0,0,0
@@ -162,10 +164,10 @@ def start():
             else: 
                 Skip("Extentions Not Found,Skipped.")
                 continue
-            if (ename=='zip' and zip_only=="zip") or (ename=='rar' and rar_only=='rar') and mv!=1:
+            if ename==zip_only or ename==rar_only and mv!=1:
                 _un=ename
                 Info(f"Extract {fname} using un{ename}.")
-            elif setpath==1 or cuspath==1:Info("Windows:","Extract using",path7z)
+            elif setpath==1 or cuspath==1:Info("Windows:","Extract using\t",path7z)
             elif p7zip=='7z':
                 Info(f'Extract {fname} using p7zip.')
                 _7z=1
@@ -301,6 +303,6 @@ for otheropt in otheropts:
     else:Info("Type 'python tagmyarchive.py -h' for usages.") 
 if os.name=='nt':
     Info("System:\t",os.name)
-try:
-    if sta==1 or (_x==1 and _o==1):start()
-except NameError:Info("Type 'python tagmyarchive.py -h' for usages.")
+#try:
+if sta==1 or (_x==1 and _o==1):start()
+#except NameError:Info("Type 'python tagmyarchive.py -h' for usages.")
