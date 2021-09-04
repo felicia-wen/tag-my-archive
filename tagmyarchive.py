@@ -40,6 +40,7 @@ class Match:
 class Quirk:    
     def SplitMinus(str):return re.split("-+",str,1)
     def SplitSpace(str):return re.split(" +",str,1)
+    def SplitDot(str):return re.split(".+",str,1)
     def SplitBy(str):
         for by in (" by "," By "):
             if by in str:
@@ -197,6 +198,7 @@ def start():
                 fname=re.sub(Match.withBrackets('.*'),"",fname)
                 e1=Quirk.SplitMinus(fname)
                 e2=Quirk.SplitSpace(fname)
+                e3=Quirk.SplitDot(fname)
                 if len(e1)==2:
                     Info("Using fitter:",'-')
                     e=e1
@@ -206,6 +208,12 @@ def start():
                 elif len(e2)==2:
                     Info("Using fitter:",'Space')
                     e=e2
+                    n1=e[0]
+                    n2=e[1]
+                    _match=1
+                elif len(e3)==2:
+                    Info("Using fitter:",'Dot')
+                    e=e3
                     n1=e[0]
                     n2=e[1]
                     _match=1
