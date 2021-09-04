@@ -221,7 +221,7 @@ def start():
             if ne and _match==1:
                 extdir=f"{ext}/{n1}/{n2}/{n3}"
             else: extdir=f"{ext}/{n1}/{n2}"
-            if _match==0 and mv==0:
+            if _match==0:
                 Skip("No Author/Name Detected ,Skipped.")
                 continue
             if ne:Info('Extented String:',n3)
