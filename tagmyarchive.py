@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os,re,sys,stat,getopt,datetime,shutil
+import os,re,sys,getopt,datetime,shutil
 dlfolder="/opt/Download"
 ext="/opt/extract"
 noask=0
@@ -40,7 +40,7 @@ class Match:
 class Quirk:    
     def SplitMinus(str):return re.split("-+",str,1)
     def SplitSpace(str):return re.split(" +",str,1)
-    def SplitDot(str):return re.split(".+",str,1)
+    def SplitDot(str):return re.split("[.]+",str,1)
     def SplitBy(str):
         for by in (" by "," By "):
             if by in str:
@@ -85,6 +85,10 @@ def start():
     else: os.makedirs(ext),os.chdir(ext)
     if os.name=='nt':  
         os.system('echo $(which 7z unzip unrar | grep -E -o "7z$|unzip$|unrar$") > %ext%/available_ext')
+        from tkinter import filedialog
+        from tkinter import Tk
+        root = Tk()
+        root.withdraw()
     else:
         os.system('echo $(which 7z unzip unrar | grep -E -o "7z$|unzip$|unrar$") > $ext/available_ext')
     with open("available_ext",'r') as avl:
@@ -113,10 +117,11 @@ def start():
         else: 
             Shell("None of shell way extract method available.\a")
             if noask==0:
-                p7z=input("Enter your 7-Zip path here?\n[n/<path>]\n>").replace('"',"")
+                ask7z=filedialog.askopenfilename(title="Where is your 7z.exe?",filetypes=[("EXE",".exe")])
+                p7z=ask7z.replace('"',"")
                 path7z=r"{}".format(p7z)
                 if os.path.isfile(path7z)==True:
-                    Shell("Windows","Vaild 7-Zip Path.")
+                    Shell("Windows: ","Vaild 7-Zip Path.")
                     cuspath=1
                 else:sys.exit()
         Shell("Available extract method: ",avlstr,path7z)
@@ -160,82 +165,51 @@ def start():
                         if os.path.isdir(root) and mvdir==1 and root!=dlfolder:
                             mv=1
                             edit=1
+                        else:continue
                     else:continue
             else: 
                 Skip("Extentions Not Found,Skipped.")
                 continue
-            if ename==zip_only or ename==rar_only and mv!=1:
-                _un=ename
-                Info(f"Extract {fname} using un{ename}.")
-            elif setpath==1 or cuspath==1:Info("Windows:","Extract using\t",path7z)
-            elif p7zip=='7z':
-                Info(f'Extract {fname} using p7zip.')
-                _7z=1
-            else: 
-                Skip("Unsupported Extention.")
-                continue
-            Shell("Environment Checked.")
+            if mv==0:
+                if ename==zip_only or ename==rar_only and mv!=1:
+                    _un=ename
+                    Info(f"Extract {fname} using un{ename}.")
+                elif setpath==1 or cuspath==1:Info("Windows:","Extract using\t",path7z)
+                elif p7zip=='7z':
+                    Info(f'Extract {fname} using p7zip.')
+                    _7z=1
+                else: 
+                    Skip("Unsupported Extention.")
+                    continue
+                Shell("Environment Checked.")
             if mv==1:
-                fname=re.search("[^/]*$",root).group()
-                Info("fname changed to:",fname)            
-            ns=re.search(Match.inBrackets(),fname)
-            ne=re.search(Match.inParentheses(),fname)
-            n1,n2,n3="","",""
-            e=""
-            _match,_case=0,0
-            if ns: 
-                _case=1
-                Info("Special Matching triggered.",ns.group())
-                n1=ns.group()
-                n2=re.sub(Match.withBrackets(),"",fname)
-            statusby=Quirk.SplitBy(fname)
-            if statusby!=1:
-                _case,n1,n2=statusby
-            _match=_case
-            #Debug("e1:",len(e1))
-            #Debug("e2:",len(e2))
-            if _case==0:
-                fname=re.sub(Match.withBrackets('.*'),"",fname)
-                e1=Quirk.SplitMinus(fname)
-                e2=Quirk.SplitSpace(fname)
-                e3=Quirk.SplitDot(fname)
-                if len(e1)==2:
-                    Info("Using fitter:",'-')
-                    e=e1
-                    n1=e[0]
-                    n2=e[1]
-                    _match=1
-                elif len(e2)==2:
-                    Info("Using fitter:",'Space')
-                    e=e2
-                    n1=e[0]
-                    n2=e[1]
-                    _match=1
-                elif len(e3)==2:
-                    Info("Using fitter:",'Dot')
-                    e=e3
-                    n1=e[0]
-                    n2=e[1]
-                    _match=1
-            if ne:
-                Info("Extended Matching triggered.")
-                n3=ne.group()
-                n2=re.sub(Match.withParentheses(),"",n2)
-                n1=re.sub(Match.withParentheses(),"",n1)
-            n1=Quirk.Cleanup(n1)
-            n2=Quirk.Cleanup(n2)
-            Info("Author:",n1)
-            Info("Name:",n2)
-            if ne and _match==1:
-                extdir=f"{ext}/{n1}/{n2}/{n3}"
-            else: extdir=f"{ext}/{n1}/{n2}"
-            if _match==0:
-                Skip("No Author/Name Detected ,Skipped.")
-                continue
-            if ne:Info('Extented String:',n3)
-            if os.path.isdir(extdir):Warn("dir already exists.")
-            else:os.makedirs(extdir),Info("mkdir:",extdir)
+                mvname=re.search(f"(?<={dlfolder}/).*",root).group()
+                if "/" in mvname:
+                    Warn("Directory tree detected,Classification will be disabled.")
+                    classed=ext+"/"+mvname 
+            ne, n1, n2, n3, _match = Matches(fname)
+            if not classed:
+                if _match==0:
+                    Skip("No Author/Name Detected.")
+                    if mvname:
+                        Info("Try to match in ",mvname)
+                        ne, n1, n2, n3, _match = Matches(mvname)
+                        if _match==0:
+                            Skip("No Author/Name Detected in Parent Directory.")
+                            continue
+                    else:continue
+                if _match==1:
+                    Info("Author:",n1)
+                    Info("Name:",n2)
+                    if ne:
+                        extdir=f"{ext}/{n1}/{n2}/{n3}"
+                        Info('Extented Strings:',n3)
+                    else: extdir=f"{ext}/{n1}/{n2}"
+                    CheckDir(extdir)
             if mv==1:
+                if classed:
+                    extdir=classed
+                    CheckDir(extdir)
                 if os.path.isfile(extdir+'/'+name):
                     Warn(name,"  Already exists.Overwriting.")
                     os.remove(extdir+'/'+name)
@@ -271,6 +245,59 @@ def start():
         cusf.write(path7z)
         cusf.close
     if os.path.isfile('available_ext'):os.remove('available_ext')
+
+def CheckDir(extdir):
+    if os.path.isdir(extdir):Warn("dir already exists.")
+    else:os.makedirs(extdir),Info("mkdir:",extdir)
+
+def Matches(fname):
+    ns=re.search(Match.inBrackets(),fname)
+    ne=re.search(Match.inParentheses(),fname)
+    n1,n2,n3="","",""
+    e=""
+    _match,_case=0,0
+    if ns: 
+        _case=1
+        Info("Special Matching triggered.",ns.group())
+        n1=ns.group()
+        n2=re.sub(Match.withBrackets(),"",fname)
+    statusby=Quirk.SplitBy(fname)
+    if statusby!=1:
+        _case,n1,n2=statusby
+    _match=_case
+            #Debug("e1:",len(e1))
+            #Debug("e2:",len(e2))
+    if _case==0:
+        fname=re.sub(Match.withBrackets('.*'),"",fname)
+        e1=Quirk.SplitMinus(fname)
+        e2=Quirk.SplitSpace(fname)
+        e3=Quirk.SplitDot(fname)
+        if len(e1)==2:
+            Info("Using fitter:",'-')
+            e=e1
+            n1=e[0]
+            n2=e[1]
+            _match=1
+        elif len(e2)==2:
+            Info("Using fitter:",'Space')
+            e=e2
+            n1=e[0]
+            n2=e[1]
+            _match=1
+        elif len(e3)==2:
+            Info("Using fitter:",'Dot')
+            e=e3
+            n1=e[0]
+            n2=e[1]
+            _match=1
+    if ne:
+        Info("Extended Matching triggered.")
+        n3=ne.group()
+        n2=re.sub(Match.withParentheses(),"",n2)
+        n1=re.sub(Match.withParentheses(),"",n1)
+    n1=Quirk.Cleanup(n1)
+    n2=Quirk.Cleanup(n2)
+    return ne,n1,n2,n3,_match
     
 help="""
 Sample:\tpython tagmyarchive.py -s -x <ResourceDir> -o <ExtractTargetDir>
