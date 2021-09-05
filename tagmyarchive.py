@@ -171,7 +171,7 @@ def start():
                 Skip("Extentions Not Found,Skipped.")
                 continue
             if mv==0:
-                if ename==zip_only or ename==rar_only and mv!=1:
+                if ename==zip_only or ename==rar_only:
                     _un=ename
                     Info(f"Extract {fname} using un{ename}.")
                 elif setpath==1 or cuspath==1:Info("Windows:","Extract using\t",path7z)
@@ -186,7 +186,10 @@ def start():
                 mvname=re.search(f"(?<={dlfolder}/).*",root).group()
                 if "/" in mvname:
                     Warn("Directory tree detected,Classification will be disabled.")
-                    classed=ext+"/"+mvname 
+                    classed=ext+"/"+mvname
+                if os.path.isfile(f"{root}.aria2"):
+                    Skip(f"{root}.aira2 Detected.")
+                    continue
             ne, n1, n2, n3, _match = Matches(fname)
             if not classed:
                 if _match==0:
