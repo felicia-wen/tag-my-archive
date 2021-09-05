@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os,re,sys,getopt,datetime,shutil
-dlfolder="/opt/Download"
-ext="/opt/extract"
+dlfolder="/opt/Completed"
+ext="/opt/Completed/classed"
 noask=0
 mvdir=0
 class Colors:
@@ -182,11 +182,13 @@ def start():
                     Skip("Unsupported Extention.")
                     continue
                 Shell("Environment Checked.")
+            classed=False
             if mv==1:
                 mvname=re.search(f"(?<={dlfolder}/).*",root).group()
                 if "/" in mvname:
                     Warn("Directory tree detected,Classification will be disabled.")
-                    classed=ext+"/"+mvname
+                    Class=ext+"/"+mvname
+                    classed=True
                 if os.path.isfile(f"{root}.aria2"):
                     Skip(f"{root}.aira2 Detected.")
                     continue
@@ -211,7 +213,7 @@ def start():
                     CheckDir(extdir)
             if mv==1:
                 if classed:
-                    extdir=classed
+                    extdir=Class
                     CheckDir(extdir)
                 if os.path.isfile(extdir+'/'+name):
                     Warn(name,"  Already exists.Overwriting.")
