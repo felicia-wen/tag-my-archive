@@ -40,7 +40,7 @@ class Quirk:
             else:return 1
     def Cleanup(str):return re.sub("^(\s*_*)*|(\s*_*)*$","",str)
 ```
-## Depends:
+## Dependencies:
 * Unix/NT
 * Packages
     * 7z 
